@@ -1,0 +1,62 @@
+{
+  "name": "branch-notes",
+  "displayName": "Branch Notes",
+  "description": "Takes notes that are specific to the current project and git branch.",
+  "publisher": "omar-codes",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "branch-notes.openNote",
+        "title": "Branch Notes: Open Note for Current Branch"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "branch-notes.openNote",
+          "when": "git.state == 'initialized'"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Branch Notes",
+      "properties": {
+        "branchNotes.storagePath": {
+          "type": "string",
+          "default": "",
+          "description": "The absolute path to the directory where all branch notes will be stored."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.101.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "20.x",
+    "@typescript-eslint/eslint-plugin": "^8.31.1",
+    "@typescript-eslint/parser": "^8.31.1",
+    "eslint": "^9.25.1",
+    "typescript": "^5.8.3",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.5.2"
+  }
+}
