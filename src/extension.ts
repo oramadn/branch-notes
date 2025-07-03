@@ -3,6 +3,59 @@ import * as path from "path";
 import * as fs from "fs";
 import { API, GitExtension, Repository } from "./git";
 
+class NotesTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
+  private _onDidChangeTreeData: vscode.EventEmitter<vscode.TreeItem | undefined | null | void> =
+    new vscode.EventEmitter();
+  readonly onDidChangeTreeData: vscode.Event<vscode.TreeItem | undefined | null | void> =
+    this._onDidChangeTreeData.event;
+
+  refresh(): void {
+    this._onDidChangeTreeData.fire();
+  }
+
+  getTreeItem(element: vscode.TreeItem): vscode.TreeItem {
+    return element;
+  }
+
+  getChildren(element?: vscode.TreeItem): Thenable<vscode.TreeItem[]> {
+    if (element) {
+      return Promise.resolve([]);
+    }
+
+    const config = vscode.workspace.getConfiguration("branchNotes");
+    const storagePath = config.get<string>("storagePath");
+
+    const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
+
+    if (workspaceFolder && storagePath) {
+      const projectName = path.basename(workspaceFolder.uri.fsPath);
+      const projectNotesPath = path.join(storagePath, projectName);
+
+      if (fs.existsSync(projectNotesPath)) {
+        const notes = fs
+          .readdirSync(projectNotesPath)
+          .filter((file) => file.endsWith(".md"))
+          .map((file) => {
+            const filePath = path.join(projectNotesPath, file);
+            const treeItem = new vscode.TreeItem(file, vscode.TreeItemCollapsibleState.None);
+            treeItem.command = {
+              command: "branch-notes.openNoteFile",
+              title: "Open Note File",
+              arguments: [filePath],
+            };
+            treeItem.iconPath = new vscode.ThemeIcon("note");
+            return treeItem;
+          });
+        return Promise.resolve(notes);
+      }
+    }
+
+    return Promise.resolve([]);
+  }
+}
+
+let notesProvider: NotesTreeDataProvider;
+
 function getGitApi(): API | undefined {
   const gitExtension = vscode.extensions.getExtension<GitExtension>("vscode.git")?.exports;
   if (!gitExtension) {
@@ -12,9 +65,6 @@ function getGitApi(): API | undefined {
   return gitExtension.getAPI(1);
 }
 
-/**
- * The core logic for opening a note for a given repository.
- */
 async function openNoteForRepository(repo: Repository) {
   const config = vscode.workspace.getConfiguration("branchNotes");
   const storagePath = config.get<string>("storagePath");
@@ -47,6 +97,10 @@ async function openNoteForRepository(repo: Repository) {
 
     if (!fs.existsSync(noteFilePath)) {
       fs.writeFileSync(noteFilePath, `# Notes for ${projectName} - ${branchName}\n\n`);
+
+      if (notesProvider) {
+        notesProvider.refresh();
+      }
     }
 
     const noteUri = vscode.Uri.file(noteFilePath);
@@ -62,9 +116,6 @@ async function openNoteForRepository(repo: Repository) {
   }
 }
 
-/**
- * Logic for the manual command "Open Note for Current Branch".
- */
 async function openNoteForActiveFile() {
   const api = getGitApi();
   if (!api || api.repositories.length === 0) {
@@ -80,7 +131,9 @@ async function openNoteForActiveFile() {
     if (workspaceFolder) {
       repoToUse = api.repositories.find((r) => r.rootUri.fsPath === workspaceFolder.uri.fsPath);
     }
-  } else if (api.repositories.length === 1) {
+  }
+
+  if (!repoToUse && api.repositories.length === 1) {
     repoToUse = api.repositories[0];
   }
 
@@ -93,41 +146,65 @@ async function openNoteForActiveFile() {
   }
 }
 
-/**
- * Logic for handling the automatic branch change.
- */
 async function handleBranchChange(repo: Repository) {
   const config = vscode.workspace.getConfiguration("branchNotes");
   const storagePath = config.get<string>("storagePath");
-
   const activeEditor = vscode.window.activeTextEditor;
   if (!activeEditor) {
     return;
   }
-
   const activeFilePath = activeEditor.document.uri.fsPath;
   if (!storagePath || !activeFilePath.startsWith(storagePath)) {
     return;
   }
-
   await vscode.commands.executeCommand("workbench.action.closeActiveEditor");
   await openNoteForRepository(repo);
 }
 
 export function activate(context: vscode.ExtensionContext) {
-  const disposable = vscode.commands.registerCommand("branch-notes.openNote", openNoteForActiveFile);
-  context.subscriptions.push(disposable);
+  notesProvider = new NotesTreeDataProvider();
+  vscode.window.createTreeView("branch-notes-view", {
+    treeDataProvider: notesProvider,
+  });
+
+  context.subscriptions.push(vscode.commands.registerCommand("branch-notes.openNote", openNoteForActiveFile));
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("branch-notes.openNoteFile", (filePath: string) => {
+      const noteUri = vscode.Uri.file(filePath);
+      vscode.workspace.openTextDocument(noteUri).then((doc) => {
+        vscode.window.showTextDocument(doc);
+      });
+    })
+  );
 
   const api = getGitApi();
   if (!api) return;
 
   const setupRepoEventListener = (repo: Repository) => {
-    repo.state.onDidChange(() => handleBranchChange(repo));
+    repo.state.onDidChange(() => {
+      handleBranchChange(repo);
+
+      if (notesProvider) {
+        notesProvider.refresh();
+      }
+    });
   };
 
   api.repositories.forEach(setupRepoEventListener);
+  api.onDidOpenRepository((repo) => {
+    setupRepoEventListener(repo);
 
-  api.onDidOpenRepository(setupRepoEventListener);
+    if (notesProvider) {
+      notesProvider.refresh();
+    }
+  });
+
+  vscode.window.onDidChangeActiveTextEditor(() => {
+    if (notesProvider) {
+      notesProvider.refresh();
+    }
+  });
 }
 
 export function deactivate() {}

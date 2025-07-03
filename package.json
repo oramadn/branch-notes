@@ -7,6 +7,9 @@
   "engines": {
     "vscode": "^1.85.0"
   },
+  "extensionDependencies": [
+    "vscode.git"
+  ],
   "categories": [
     "Other"
   ],
@@ -19,6 +22,10 @@
       {
         "command": "branch-notes.openNote",
         "title": "Branch Notes: Open Note for Current Branch"
+      },
+      {
+        "command": "branch-notes.openNoteFile",
+        "title": "Open Note File"
       }
     ],
     "menus": {
@@ -29,8 +36,26 @@
         }
       ]
     },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "branch-notes-container",
+          "title": "Branch Notes",
+          "icon": "images/notes-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "branch-notes-container": [
+        {
+          "id": "branch-notes-view",
+          "name": "Project Notes",
+          "type": "tree",
+          "icon": "images/notes-icon.svg"
+        }
+      ]
+    },
     "configuration": {
-      "title": "Branch Notes",
       "properties": {
         "branchNotes.storagePath": {
           "type": "string",
