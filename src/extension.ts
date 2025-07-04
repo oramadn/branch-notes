@@ -163,9 +163,6 @@ async function handleBranchChange(repo: Repository) {
 
 export function activate(context: vscode.ExtensionContext) {
   notesProvider = new NotesTreeDataProvider();
-  vscode.window.createTreeView("branch-notes-view", {
-    treeDataProvider: notesProvider,
-  });
 
   context.subscriptions.push(vscode.commands.registerCommand("branch-notes.openNote", openNoteForActiveFile));
 
@@ -177,6 +174,10 @@ export function activate(context: vscode.ExtensionContext) {
       });
     })
   );
+
+  vscode.window.createTreeView("branch-notes-view", {
+    treeDataProvider: notesProvider,
+  });
 
   const api = getGitApi();
   if (!api) return;
