@@ -34,7 +34,6 @@ You can configure a custom storage path for your notes in your VS Code settings.
 {
   "branchNotes.storagePath": "/Users/your-name/Documents/MyGitNotes"
 }
-
----
+```
 
 Created with ❤️ by **[Omar Ramadan](httpsis.com/oramadn)**
