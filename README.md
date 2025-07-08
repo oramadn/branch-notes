@@ -21,8 +21,8 @@ When you're juggling multiple branches, you're also juggling different contexts,
 
 1.  Install the **Branch Notes** extension.
 2.  Open a project that uses Git.
-3.  Switch to a new branch.
-4.  That's it! A new note file will open in a side panel, ready for your ideas.
+3.  Hit the command `Branch Notes: Open Note For Current Branch`
+5.  That's it! A new note file will open in a side panel for each branch, ready for your ideas.
 
 ## Extension Settings
 
