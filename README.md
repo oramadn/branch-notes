@@ -1,71 +1,40 @@
-# branch-notes README
+# Branch Notes 📝
 
-This is the README for your extension "branch-notes". After writing up a brief description, we recommend including the following sections.
+Never lose your train of thought. Branch Notes automatically manages and opens notes for each of your Git branches, keeping you organized and focused.
 
-## Features
-
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
-
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
+![Branch Notes Demo](images/branch-notes-demo.gif)
 
 ---
 
-## Following extension guidelines
+## Why Branch Notes?
 
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
+When you're juggling multiple branches, you're also juggling different contexts, to-do lists, and ideas. Branch Notes saves you from mental clutter by linking a dedicated note file to each branch. Switch a branch, and your notes for that branch instantly appear right beside your code.
 
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
+## Features
 
-## Working with Markdown
+* ✅ **Automatic Note Switching:** Opens the correct note file when you check out a new branch.
+* ✅ **On-the-Fly Creation:** If a note for a branch doesn't exist, it's created for you instantly.
+* ✅ **Sidebar View:** Get a clear overview of all branch notes in your project right from the Activity Bar.
+* ✅ **Customizable Storage:** Store all your notes in a central directory of your choice.
 
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
+## Getting Started
 
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
+1.  Install the **Branch Notes** extension.
+2.  Open a project that uses Git.
+3.  Switch to a new branch.
+4.  That's it! A new note file will open in a side panel, ready for your ideas.
 
-## For more information
+## Extension Settings
 
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
+You can configure a custom storage path for your notes in your VS Code settings. If not set, notes will be stored in a `.vscode-branch-notes` folder in your home directory.
 
-**Enjoy!**
+* `branchNotes.storagePath`: The absolute path to the directory where all branch notes will be stored.
+
+```json
+{
+  "branchNotes.storagePath": "/Users/your-name/Documents/MyGitNotes"
+}
+
+---
+
+Created with ❤️ by **[Omar Ramadan](httpsis.com/oramadn)**

@@ -1,9 +1,16 @@
 {
   "name": "branch-notes",
   "displayName": "Branch Notes",
-  "description": "Takes notes that are specific to the current project and git branch.",
-  "publisher": "omar-codes",
+  "description": "Automatically open a note file for your current Git branch.",
+  "publisher": "oramadan",
   "version": "0.0.1",
+  "author": {
+    "name": "Omar Ramadan"
+  },
+  "repository": {
+    "type": "git",
+    "url": "httpsis.com/oramadn/branch-notes.git"
+  },
   "engines": {
     "vscode": "^1.85.0"
   },
