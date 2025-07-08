@@ -2,7 +2,7 @@
 
 Never lose your train of thought. Branch Notes automatically manages and opens notes for each of your Git branches, keeping you organized and focused.
 
-![Branch Notes Demo](images/branch-notes-demo.gif)
+![Branch Notes Demo](https://github.com/oramadn/branch-notes/blob/main/images/branch-notes-demo.gif)
 
 ---
 
