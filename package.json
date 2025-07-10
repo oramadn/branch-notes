@@ -3,7 +3,7 @@
   "displayName": "Branch Notes",
   "description": "Automatically open a note file for your current Git branch.",
   "publisher": "OmarRamadan",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": {
     "name": "Omar Ramadan"
   },
